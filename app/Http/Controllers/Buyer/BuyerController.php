@@ -11,23 +11,22 @@ use Illuminate\Http\Request;
 
 class BuyerController extends ApiController
 {
+
     /**
-     * Display a listing of the resource.
-     *
      * @return \Illuminate\Http\JsonResponse
      */
     public function index()
     {
-        return $this->showAll((new Buyer)->has("transactions")->get());
+        return $this->showAll(Buyer::all());
     }
 
+    /**
+     * @param Buyer $buyer
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function show(Buyer $buyer){
 
-        if($buyer->transactions()->count()){
-            return $this->showOne($buyer);
-        }else{
-        throw new ModelNotFoundException();
-        }
+        return $this->showOne($buyer);
 
     }
 }
