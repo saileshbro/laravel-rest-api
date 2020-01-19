@@ -7,6 +7,9 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
 
+/**
+ * @method has(string $string)
+ */
 class User extends Authenticatable
 {
     protected $table='users';
@@ -49,5 +52,30 @@ class User extends Authenticatable
     }
     public  static  function  generateVerificationCode(){
         return Str::random(40);
+    }
+
+    /**
+     * Mutator for setting name
+     * @param $name
+     */
+    public function setNameAttribute($name){
+        $this->attributes['name']=strtolower($name);
+    }
+
+    /**
+     * Accessor for retriving name
+     * @param $name
+     * @return string
+     */
+    public function getNameAttribute($name){
+        return ucwords($name);
+    }
+
+    /**
+     * Mutator for setting name
+     * @param $email
+     */
+    public function setEmailAttribute($email){
+        $this->attributes['email']=strtolower($email);
     }
 }
