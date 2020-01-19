@@ -9,6 +9,7 @@ use Illuminate\Support\Str;
 
 class User extends Authenticatable
 {
+    protected $table='users';
     use Notifiable;
     const VERIFIED_USER='1';
     const UNVERIFIED_USER='0';

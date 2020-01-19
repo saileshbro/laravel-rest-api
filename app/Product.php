@@ -14,7 +14,7 @@ class Product extends Model
     public function isAvailable(){
         return $this->status===Product::AVAILABLE_PRODUCT;
     }
-    public function category(){
+    public function categories(){
         return $this->belongsToMany(Category::class);
     }
     public  function  transactions(){

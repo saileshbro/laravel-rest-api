@@ -22,11 +22,11 @@ class CreateProductsTable extends Migration
             $table->unsignedInteger('quantity');
             $table->string('status')->default(Product::UNAVAILABLE_PRODUCT);
             $table->string('image');
-            $table->unsignedInteger('seller_id');
+            $table->unsignedBigInteger('seller_id');
             $table->timestamps();
-
             $table->foreign('seller_id')->references('id')->on('users');
         });
+
     }
 
     /**
