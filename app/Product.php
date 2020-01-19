@@ -11,19 +11,30 @@ class Product extends Model
     protected $dates = ['deleted_at'];
     const UNAVAILABLE_PRODUCT = "unavailable";
     const AVAILABLE_PRODUCT = "available";
-    protected  $fillable = [
-        "name","description","quantity","status","image","seller_id"
+    protected $hidden = [
+        'pivot'
     ];
-    public function isAvailable(){
-        return $this->status===Product::AVAILABLE_PRODUCT;
+    protected $fillable = [
+        "name", "description", "quantity", "status", "image", "seller_id"
+    ];
+
+    public function isAvailable()
+    {
+        return $this->status === Product::AVAILABLE_PRODUCT;
     }
-    public function categories(){
+
+    public function categories()
+    {
         return $this->belongsToMany(Category::class);
     }
-    public  function  transactions(){
+
+    public function transactions()
+    {
         return $this->hasMany(Transaction::class);
     }
-    public  function seller(){
+
+    public function seller()
+    {
         return $this->belongsTo(Seller::class);
     }
 }
