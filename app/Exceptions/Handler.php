@@ -9,6 +9,7 @@ use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Http\Exceptions\ThrottleRequestsException;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -39,7 +40,7 @@ class Handler extends ExceptionHandler
     /**
      * Report or log an exception.
      *
-     * @param  \Exception  $exception
+     * @param \Exception $exception
      * @return void
      *
      * @throws \Exception
@@ -52,8 +53,8 @@ class Handler extends ExceptionHandler
     /**
      * Render an exception into an HTTP response.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Exception  $exception
+     * @param \Illuminate\Http\Request $request
+     * @param \Exception $exception
      * @return \Symfony\Component\HttpFoundation\Response
      *
      * @throws \Exception
@@ -62,35 +63,38 @@ class Handler extends ExceptionHandler
     {
         if ($exception instanceof ModelNotFoundException) {
             $modelName = strtolower(class_basename($exception->getModel()));
-             return $this->errorResponse("Does not exists any {$modelName} with the specified identificator",404);
+            return $this->errorResponse("Does not exists any {$modelName} with the specified identificator", 404);
         }
-        if($exception instanceof  ValidationException){
-            return $this->errorResponse($exception->validator->errors()->getMessages(),422);
+        if ($exception instanceof ValidationException) {
+            return $this->errorResponse($exception->validator->errors()->getMessages(), 422);
         }
-        if($exception instanceof  AuthenticationException){
-            return $this->errorResponse("Unauthenticated",401);
+        if ($exception instanceof AuthenticationException) {
+            return $this->errorResponse("Unauthenticated", 401);
         }
-        if($exception instanceof  AuthorizationException){
-            return $this->errorResponse($exception->getMessage(),403);
+        if ($exception instanceof AuthorizationException) {
+            return $this->errorResponse($exception->getMessage(), 403);
         }
-        if($exception instanceof  MethodNotAllowedException){
-          return $this->errorResponse("The specified method for the request is invalid.",404);
+        if ($exception instanceof MethodNotAllowedException) {
+            return $this->errorResponse("The specified method for the request is invalid.", 404);
         }
-        if($exception instanceof NotFoundHttpException){
-            return $this->errorResponse("The specified URL cannot be found",404);
+        if ($exception instanceof NotFoundHttpException) {
+            return $this->errorResponse("The specified URL cannot be found", 404);
         }
-        if($exception instanceof HttpException){
-            return $this->errorResponse($exception->getMessage(),$exception->getStatusCode());
+        if ($exception instanceof HttpException) {
+            return $this->errorResponse($exception->getMessage(), $exception->getStatusCode());
         }
-        if ($exception instanceof QueryException){
+        if ($exception instanceof QueryException) {
             $errorCode = $exception->errorInfo[1];
-            if($errorCode==1451){
-                return  $this->errorResponse("Cannot remove this resourse permanently. It is related to any other resource.",409);
+            if ($errorCode == 1451) {
+                return $this->errorResponse("Cannot remove this resourse permanently. It is related to any other resource.", 409);
             }
         }
-        if(config('app.debug')){
+        if ($exception instanceof ThrottleRequestsException) {
+            return $this->errorResponse($exception->getMessage(), $exception->getStatusCode());
+        }
+        if (config('app.debug')) {
             return parent::render($request, $exception);
         }
-        return $this->errorResponse("Unexpected Exception. Try later",500);
+        return $this->errorResponse("Unexpected Exception. Try later", 500);
     }
 }
