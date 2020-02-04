@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Transformers\UserTransformer;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -11,6 +12,7 @@ use Illuminate\Support\Str;
 class User extends Authenticatable
 {
     use SoftDeletes, Notifiable;
+
     protected $dates = ['deleted_at'];
     protected $table = 'users';
     const VERIFIED_USER = '1';
@@ -22,6 +24,7 @@ class User extends Authenticatable
      *
      * @var array
      */
+    public $transformer = UserTransformer::class;
     protected $fillable = [
         'name', 'email', 'password', 'verified',
         'verification_token',
@@ -35,7 +38,7 @@ class User extends Authenticatable
      */
     protected $hidden = [
         'password', 'remember_token',
-//        'verification_token'
+        'verification_token'
     ];
 
     /**

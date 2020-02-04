@@ -166,6 +166,7 @@ return [
          * Package Service Providers...
          */
         Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
+        Spatie\Fractal\FractalServiceProvider::class,
         /*
          * Application Service Providers...
          */
